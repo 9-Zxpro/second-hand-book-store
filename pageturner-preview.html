@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageTurner — Pre-Loved Books</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sage: {
+              100: '#e3ede4', 200: '#c8daca', 600: '#3b6641', 700: '#315236', 800: '#2a422d',
+            },
+            paper: { 50: '#faf7f2', 100: '#f5ede0' },
+          },
+          fontFamily: {
+            display: ["'Playfair Display'", 'Georgia', 'serif'],
+            body: ["'Lora'", 'Georgia', 'serif'],
+            sans: ["'DM Sans'", 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.7s ease-out forwards',
+            'float': 'float 3.5s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeUp: { '0%': { opacity: '0', transform: 'translateY(18px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-9px)' } },
+          },
+          boxShadow: {
+            book: '4px 6px 20px rgba(0,0,0,0.16), 2px 3px 8px rgba(0,0,0,0.10), inset -2px 0 4px rgba(0,0,0,0.08)',
+            'book-hover': '8px 12px 32px rgba(0,0,0,0.20), 4px 6px 12px rgba(0,0,0,0.12)',
+            card: '0 2px 12px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)',
+            glass: '0 4px 24px rgba(0,0,0,0.08)',
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    ::selection { background: rgba(217,119,6,0.18); }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .animate-float { animation: float 3.5s ease-in-out infinite; }
+    .font-display { font-family: 'Playfair Display', Georgia, serif; }
+    .font-body { font-family: 'Lora', Georgia, serif; }
+    .font-sans-dm { font-family: 'DM Sans', system-ui, sans-serif; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-9px); } }
+    .fade-up { animation: fadeUp 0.6s ease-out both; }
+    .delay-1 { animation-delay: 80ms; }
+    .delay-2 { animation-delay: 160ms; }
+    .delay-3 { animation-delay: 240ms; }
+    .delay-4 { animation-delay: 320ms; }
+    .delay-5 { animation-delay: 400ms; }
+    .delay-6 { animation-delay: 480ms; }
+    .delay-7 { animation-delay: 560ms; }
+    .delay-8 { animation-delay: 640ms; }
+    /* Dots pattern */
+    .dots-bg {
+      background-image: radial-gradient(circle, #57534e 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    /* Scrolled navbar */
+    .navbar-scrolled {
+      background: rgba(250,249,247,0.85) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 1px 16px rgba(0,0,0,0.07);
+    }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 antialiased" style="font-family:'DM Sans',system-ui,sans-serif">
+
+<!-- ══════════════════════════════════════════════════ NAVBAR ══ -->
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" style="background:transparent">
+
+  <!-- Eco bar -->
+  <div id="eco-bar" class="w-full py-1.5 transition-all duration-300" style="background:#3b6641">
+    <p class="text-center text-xs text-white/90 flex items-center justify-center gap-1.5" style="font-family:'DM Sans',sans-serif">
+      <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 3s5 1 7 5c2-4 7-5 7-5s-1 7-7 8c-6-1-7-8-7-8z"/></svg>
+      Every purchase saves a book from landfill — join 40,000+ eco-conscious readers
+    </p>
+  </div>
+
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 md:h-[72px] gap-4">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2.5 shrink-0 group">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-md transition-transform duration-200 group-hover:scale-105" style="background:#d97706">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <div class="hidden sm:block leading-none">
+          <span class="font-display text-xl font-bold text-stone-900">Page</span><span class="font-display text-xl font-bold" style="color:#d97706">Turner</span>
+        </div>
+      </a>
+
+      <!-- Search -->
+      <div class="hidden md:flex flex-1 max-w-lg">
+        <div class="relative w-full">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg>
+          <input type="text" placeholder="Search titles, authors, ISBN…" class="w-full pl-10 pr-4 py-2.5 text-sm text-stone-800 placeholder-stone-400 rounded-xl border border-stone-200 bg-white/80 outline-none transition-all duration-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 hover:border-stone-300" style="font-family:'DM Sans',sans-serif"/>
+        </div>
+      </div>
+
+      <!-- Nav links -->
+      <div class="hidden lg:flex items-center gap-0.5">
+        <a href="#" class="px-3.5 py-2 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-100/80 rounded-lg transition-all" style="font-family:'DM Sans',sans-serif;font-weight:500">Browse</a>
+        <a href="#" class="px-3.5 py-2 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-100/80 rounded-lg transition-all" style="font-family:'DM Sans',sans-serif;font-weight:500">Categories</a>
+        <a href="#" class="px-3.5 py-2 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-100/80 rounded-lg transition-all" style="font-family:'DM Sans',sans-serif;font-weight:500">New Arrivals</a>
+        <a href="#" class="px-3.5 py-2 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-100/80 rounded-lg transition-all" style="font-family:'DM Sans',sans-serif;font-weight:500">Best Deals</a>
+      </div>
+
+      <!-- Right actions -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button class="relative p-2.5 text-stone-600 hover:text-stone-900 hover:bg-stone-100/80 rounded-xl transition-all" aria-label="Cart">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full ring-2 ring-stone-50" style="background:#f59e0b"></span>
+        </button>
+        <a href="#" class="hidden sm:flex items-center gap-1.5 px-4 py-2.5 text-white text-sm rounded-xl transition-all shadow-sm hover:shadow-md active:scale-95" style="background:#1c1917;font-family:'DM Sans',sans-serif;font-weight:600">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Sell a Book
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ══════════════════════════════════════════════════ HERO ══ -->
+<section class="relative min-h-screen overflow-hidden pt-24" style="background:#faf9f7">
+  <!-- Dots bg -->
+  <div class="absolute inset-0 opacity-[0.04] dots-bg pointer-events-none"></div>
+  <!-- Ambient blobs -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute" style="top:25%;left:-5rem;width:24rem;height:24rem;background:rgba(245,158,11,0.08);border-radius:9999px;filter:blur(80px)"></div>
+    <div class="absolute" style="bottom:25%;right:-5rem;width:20rem;height:20rem;background:rgba(77,129,84,0.08);border-radius:9999px;filter:blur(80px)"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 py-16 lg:py-24">
+
+      <!-- Text column -->
+      <div class="flex-1 text-center lg:text-left space-y-7">
+        <!-- Tag -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border fade-up" style="background:#e3ede4;border-color:#c8daca">
+          <svg class="w-3.5 h-3.5" style="color:#3b6641" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+          <span class="text-xs font-bold uppercase tracking-widest" style="color:#3b6641;font-family:'DM Sans',sans-serif">Sustainable Reading</span>
+        </div>
+
+        <!-- Headline -->
+        <div class="fade-up delay-1">
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-stone-900 leading-[1.07] tracking-tight">
+            Every Story<br>
+            <span class="relative" style="color:#d97706">Deserves
+              <svg class="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none"><path d="M2 8 Q50 2 100 6 Q150 10 198 4" stroke="#fde68a" stroke-width="4" stroke-linecap="round"/></svg>
+            </span><br>
+            a Second Life
+          </h1>
+        </div>
+
+        <!-- Subtext -->
+        <p class="font-body text-lg text-stone-600 leading-relaxed max-w-lg mx-auto lg:mx-0 fade-up delay-2">
+          Discover pre-loved books at a fraction of the price. Give your bookshelf a sustainable upgrade — or sell the ones gathering dust and let another reader fall in love.
+        </p>
+
+        <!-- Meta pills -->
+        <div class="flex flex-wrap gap-4 justify-center lg:justify-start text-sm text-stone-500 fade-up delay-3" style="font-family:'DM Sans',sans-serif">
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background:#4d8154"></span>75% cheaper than new</span>
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background:#f59e0b"></span>Free shipping over £15</span>
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full inline-block" style="background:#a8a29e"></span>30-day returns</span>
+        </div>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start fade-up delay-4">
+          <a href="#featured" class="group inline-flex items-center justify-center gap-2 px-7 py-3.5 text-white font-semibold text-base rounded-xl transition-all shadow-lg hover:shadow-xl active:scale-[0.98]" style="background:#1c1917;font-family:'DM Sans',sans-serif">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            Shop Now
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#" class="group inline-flex items-center justify-center gap-2 px-7 py-3.5 text-stone-800 font-semibold text-base rounded-xl border-2 border-stone-200 hover:border-stone-300 bg-white hover:bg-stone-50 transition-all shadow-card active:scale-[0.98]" style="font-family:'DM Sans',sans-serif">
+            <svg class="w-5 h-5" style="color:#d97706" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            Sell a Book
+          </a>
+        </div>
+
+        <!-- Social proof -->
+        <div class="flex items-center gap-3 justify-center lg:justify-start fade-up delay-5">
+          <div class="flex -space-x-2.5">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=face" class="w-9 h-9 rounded-full border-2 border-stone-50 object-cover shadow-sm" alt=""/>
+            <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=40&h=40&fit=crop&crop=face" class="w-9 h-9 rounded-full border-2 border-stone-50 object-cover shadow-sm" alt=""/>
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" class="w-9 h-9 rounded-full border-2 border-stone-50 object-cover shadow-sm" alt=""/>
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" class="w-9 h-9 rounded-full border-2 border-stone-50 object-cover shadow-sm" alt=""/>
+          </div>
+          <div>
+            <div class="flex items-center gap-1">
+              <svg class="w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-3.5 h-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <span class="ml-1 text-sm font-semibold text-stone-900" style="font-family:'DM Sans',sans-serif">4.9</span>
+            </div>
+            <p class="text-xs text-stone-500" style="font-family:'DM Sans',sans-serif">from 8,240+ reviews</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book stack visual -->
+      <div class="flex-1 relative flex items-center justify-center lg:justify-end min-h-[380px] w-full fade-up delay-3">
+
+        <!-- Floating card 1 -->
+        <div class="absolute top-6 right-4 sm:right-0 bg-white/90 rounded-2xl px-4 py-3 flex items-center gap-2.5 z-20" style="backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,0.10)">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:#e3ede4">
+            <svg class="w-4 h-4" style="color:#3b6641" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3s5 1 7 5c2-4 7-5 7-5s-1 7-7 8c-6-1-7-8-7-8z"/></svg>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-stone-900" style="font-family:'DM Sans',sans-serif">Eco Saved</p>
+            <p class="text-xs text-stone-500" style="font-family:'DM Sans',sans-serif">12 trees this month</p>
+          </div>
+        </div>
+
+        <!-- Floating card 2 -->
+        <div class="absolute bottom-8 left-4 lg:left-8 bg-white/90 rounded-2xl px-4 py-3 flex items-center gap-2.5 z-20" style="backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,0.10)">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:#fef3c7">
+            <svg class="w-4 h-4" style="color:#d97706" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-stone-900" style="font-family:'DM Sans',sans-serif">New Arrivals</p>
+            <p class="text-xs text-stone-500" style="font-family:'DM Sans',sans-serif">142 books today</p>
+          </div>
+        </div>
+
+        <!-- Book stack -->
+        <div class="relative w-72 h-80 sm:w-80 sm:h-96">
+          <!-- Book 3 back -->
+          <div class="absolute bottom-0 right-0 w-44 h-60 rounded-xl overflow-hidden" style="transform:rotate(6deg) translateX(16px);box-shadow:var(--shadow-book, 4px 6px 20px rgba(0,0,0,0.16))">
+            <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&h=560&fit=crop" class="w-full h-full object-cover" alt=""/>
+            <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.30),transparent)"></div>
+          </div>
+          <!-- Book 2 middle -->
+          <div class="absolute bottom-4 left-4 w-44 h-60 rounded-xl overflow-hidden" style="transform:rotate(-4deg);box-shadow:4px 6px 20px rgba(0,0,0,0.14)">
+            <img src="https://images.unsplash.com/photo-1513001900722-370f803f498d?w=400&h=560&fit=crop" class="w-full h-full object-cover" alt=""/>
+            <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.20),transparent)"></div>
+          </div>
+          <!-- Book 1 front -->
+          <div class="absolute bottom-8 left-12 w-48 h-64 rounded-xl overflow-hidden z-10 animate-float" style="box-shadow:8px 12px 32px rgba(0,0,0,0.22),4px 6px 12px rgba(0,0,0,0.12)">
+            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=580&fit=crop" class="w-full h-full object-cover" alt="Featured book"/>
+            <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.45),transparent)"></div>
+            <div class="absolute bottom-3 left-3 right-3">
+              <div class="inline-flex items-center gap-1 rounded-md px-2 py-0.5 mb-1" style="background:#f59e0b">
+                <svg class="w-2.5 h-2.5 fill-white text-white" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <span class="text-white text-[10px] font-bold" style="font-family:'DM Sans',sans-serif">Bestseller</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="border-t border-stone-200/60 py-10">
+      <div class="grid grid-cols-3 gap-6 max-w-xl fade-up delay-6">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <svg class="w-4 h-4" style="color:#d97706" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <span class="font-display text-2xl font-bold text-stone-900">180K+</span>
+          </div>
+          <p class="text-sm text-stone-500" style="font-family:'DM Sans',sans-serif">Books Listed</p>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <svg class="w-4 h-4" style="color:#d97706" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span class="font-display text-2xl font-bold text-stone-900">40K+</span>
+          </div>
+          <p class="text-sm text-stone-500" style="font-family:'DM Sans',sans-serif">Happy Readers</p>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <svg class="w-4 h-4" style="color:#d97706" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3s5 1 7 5c2-4 7-5 7-5s-1 7-7 8c-6-1-7-8-7-8z"/></svg>
+            <span class="font-display text-2xl font-bold text-stone-900">12T</span>
+          </div>
+          <p class="text-sm text-stone-500" style="font-family:'DM Sans',sans-serif">CO₂ Saved</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════ FEATURED GRID ══ -->
+<section class="py-16 lg:py-24" id="featured" style="background:#faf9f7">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Section header -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+      <div>
+        <p class="text-sm font-bold uppercase tracking-widest mb-2" style="color:#d97706;font-family:'DM Sans',sans-serif">Handpicked for you</p>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold text-stone-900 leading-tight">Featured Books</h2>
+        <p class="mt-2 text-stone-500" style="font-family:'Lora',serif;max-width:28rem">Curated pre-loved books in great condition — each one verified and ready to ship.</p>
+      </div>
+      <a href="#" class="group inline-flex items-center gap-1.5 text-sm font-semibold text-stone-700 hover:text-stone-900 shrink-0 transition-colors" style="font-family:'DM Sans',sans-serif">
+        View all books
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide flex-nowrap mb-8" id="filter-bar">
+      <button onclick="filterBooks(this,'All')" class="filter-btn active shrink-0 px-4 py-1.5 text-sm font-medium rounded-full border transition-all text-white border-stone-900" style="background:#1c1917;font-family:'DM Sans',sans-serif">All</button>
+      <button onclick="filterBooks(this,'Fiction')" class="filter-btn shrink-0 px-4 py-1.5 text-sm font-medium rounded-full border transition-all text-stone-600 border-stone-200 bg-white hover:bg-stone-50" style="font-family:'DM Sans',sans-serif">Fiction</button>
+      <button onclick="filterBooks(this,'Non-Fiction')" class="filter-btn shrink-0 px-4 py-1.5 text-sm font-medium rounded-full border transition-all text-stone-600 border-stone-200 bg-white hover:bg-stone-50" style="font-family:'DM Sans',sans-serif">Non-Fiction</button>
+      <button onclick="filterBooks(this,'Sci-Fi')" class="filter-btn shrink-0 px-4 py-1.5 text-sm font-medium rounded-full border transition-all text-stone-600 border-stone-200 bg-white hover:bg-stone-50" style="font-family:'DM Sans',sans-serif">Sci-Fi</button>
+      <button onclick="filterBooks(this,'Self-Help')" class="filter-btn shrink-0 px-4 py-1.5 text-sm font-medium rounded-full border transition-all text-stone-600 border-stone-200 bg-white hover:bg-stone-50" style="font-family:'DM Sans',sans-serif">Self-Help</button>
+      <button onclick="filterBooks(this,'Classic')" class="filter-btn shrink-0 px-4 py-1.5 text-sm font-medium rounded-full border transition-all text-stone-600 border-stone-200 bg-white hover:bg-stone-50" style="font-family:'DM Sans',sans-serif">Classic</button>
+      <button onclick="filterBooks(this,'Psychology')" class="filter-btn shrink-0 px-4 py-1.5 text-sm font-medium rounded-full border transition-all text-stone-600 border-stone-200 bg-white hover:bg-stone-50" style="font-family:'DM Sans',sans-serif">Psychology</button>
+    </div>
+
+    <!-- Books grid -->
+    <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+
+    <!-- Load more -->
+    <div class="mt-12 text-center">
+      <button class="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-stone-800 font-semibold text-sm border-2 border-stone-200 hover:border-stone-300 rounded-xl transition-all shadow-card active:scale-95" style="font-family:'DM Sans',sans-serif">
+        Load More Books
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- Trust bar -->
+    <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="flex items-start gap-3 p-4 bg-white rounded-xl border border-stone-100" style="box-shadow:0 2px 12px rgba(0,0,0,0.05)"><span class="text-2xl">🚚</span><div><p class="text-sm font-bold text-stone-800" style="font-family:'DM Sans',sans-serif">Free Shipping</p><p class="text-xs text-stone-500" style="font-family:'DM Sans',sans-serif">On orders over £15</p></div></div>
+      <div class="flex items-start gap-3 p-4 bg-white rounded-xl border border-stone-100" style="box-shadow:0 2px 12px rgba(0,0,0,0.05)"><span class="text-2xl">🔍</span><div><p class="text-sm font-bold text-stone-800" style="font-family:'DM Sans',sans-serif">Verified Quality</p><p class="text-xs text-stone-500" style="font-family:'DM Sans',sans-serif">Every book inspected</p></div></div>
+      <div class="flex items-start gap-3 p-4 bg-white rounded-xl border border-stone-100" style="box-shadow:0 2px 12px rgba(0,0,0,0.05)"><span class="text-2xl">↩️</span><div><p class="text-sm font-bold text-stone-800" style="font-family:'DM Sans',sans-serif">Easy Returns</p><p class="text-xs text-stone-500" style="font-family:'DM Sans',sans-serif">30-day return window</p></div></div>
+      <div class="flex items-start gap-3 p-4 bg-white rounded-xl border border-stone-100" style="box-shadow:0 2px 12px rgba(0,0,0,0.05)"><span class="text-2xl">🌱</span><div><p class="text-sm font-bold text-stone-800" style="font-family:'DM Sans',sans-serif">Carbon Neutral</p><p class="text-xs text-stone-500" style="font-family:'DM Sans',sans-serif">Offset every delivery</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Cart toast -->
+<div id="cart-toast" class="fixed bottom-6 right-6 z-40 hidden items-center gap-3 px-5 py-3 rounded-2xl text-white" style="background:#1c1917;box-shadow:0 8px 32px rgba(0,0,0,0.25)">
+  <span id="cart-count" class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-stone-900" style="background:#f59e0b">0</span>
+  <span class="text-sm font-medium" style="font-family:'DM Sans',sans-serif">item(s) in cart</span>
+  <a href="#" class="text-sm font-semibold transition-colors" style="color:#fbbf24;font-family:'DM Sans',sans-serif">View →</a>
+</div>
+
+<script>
+  const BOOKS = [
+    { id:1, title:"The Midnight Library", author:"Matt Haig", img:"https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop", orig:24.99, sale:9.50, condition:"Like New", genre:"Fiction", rating:4.8, sold:142, featured:true },
+    { id:2, title:"Sapiens", author:"Yuval Noah Harari", img:"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop", orig:29.99, sale:12.00, condition:"Very Good", genre:"Non-Fiction", rating:4.9, sold:289, featured:true },
+    { id:3, title:"Dune", author:"Frank Herbert", img:"https://images.unsplash.com/photo-1476275466078-4007374efbbe?w=400&h=600&fit=crop", orig:19.99, sale:7.75, condition:"Good", genre:"Sci-Fi", rating:4.7, sold:98, isNew:true },
+    { id:4, title:"The Alchemist", author:"Paulo Coelho", img:"https://images.unsplash.com/photo-1495640388908-05fa85288e61?w=400&h=600&fit=crop", orig:16.99, sale:5.50, condition:"Well Read", genre:"Fiction", rating:4.5, sold:203 },
+    { id:5, title:"Atomic Habits", author:"James Clear", img:"https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=600&fit=crop", orig:27.99, sale:14.00, condition:"Like New", genre:"Self-Help", rating:4.9, sold:417, featured:true },
+    { id:6, title:"Norwegian Wood", author:"Haruki Murakami", img:"https://images.unsplash.com/photo-1531072901881-d644216d4bf9?w=400&h=600&fit=crop", orig:18.99, sale:8.25, condition:"Very Good", genre:"Fiction", rating:4.6, sold:156, isNew:true },
+    { id:7, title:"The Great Gatsby", author:"F. Scott Fitzgerald", img:"https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop", orig:14.99, sale:4.50, condition:"Acceptable", genre:"Classic", rating:4.3, sold:88 },
+    { id:8, title:"Thinking, Fast and Slow", author:"Daniel Kahneman", img:"https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=600&fit=crop", orig:32.00, sale:15.50, condition:"Good", genre:"Psychology", rating:4.7, sold:231 },
+  ];
+
+  const CONDITION_STYLES = {
+    "Like New":   "background:#dcfce7;color:#166534;border:1px solid #bbf7d0",
+    "Very Good":  "background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe",
+    "Good":       "background:#fffbeb;color:#92400e;border:1px solid #fde68a",
+    "Well Read":  "background:#fff7ed;color:#c2410c;border:1px solid #fed7aa",
+    "Acceptable": "background:#f5f5f4;color:#57534e;border:1px solid #e7e5e0",
+  };
+
+  let cartCount = 0;
+  let wished = {};
+
+  function starsSVG(rating) {
+    return [1,2,3,4,5].map(s => {
+      const full = s <= Math.floor(rating);
+      const color = full ? '#fbbf24' : '#e7e5e0';
+      return `<svg style="width:12px;height:12px;fill:${color};display:inline-block" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`;
+    }).join('');
+  }
+
+  function buildCard(b, idx) {
+    const disc = Math.round(((b.orig - b.sale) / b.orig) * 100);
+    const cStyle = CONDITION_STYLES[b.condition] || CONDITION_STYLES["Acceptable"];
+    const wColor = wished[b.id] ? '#ef4444' : '#a8a29e';
+    const wFill = wished[b.id] ? '#ef4444' : 'none';
+    return `
+    <article class="group relative bg-white rounded-2xl overflow-hidden flex flex-col border border-stone-100 fade-up" data-genre="${b.genre}" style="box-shadow:0 2px 12px rgba(0,0,0,0.07);animation-delay:${idx*60}ms;animation-fill-mode:both;transition:transform 0.3s,box-shadow 0.3s"
+      onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.12)'"
+      onmouseleave="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.07)'">
+      
+      <div class="relative overflow-hidden bg-stone-100" style="aspect-ratio:3/4">
+        <img src="${b.img}" alt="${b.title}" class="w-full h-full object-cover transition-transform duration-500" style="transition:transform 0.5s" loading="lazy"
+          onmouseenter="this.style.transform='scale(1.06)'"
+          onmouseleave="this.style.transform=''"/>
+        <div class="absolute inset-0 opacity-0 flex items-center justify-center transition-opacity duration-300" id="overlay-${b.id}"
+          style="background:rgba(28,25,23,0.18)">
+          <button class="flex items-center gap-1.5 bg-white/95 text-stone-800 text-xs font-bold px-3 py-2 rounded-xl shadow-md" style="font-family:'DM Sans',sans-serif">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            Quick View
+          </button>
+        </div>
+
+        <!-- Badges -->
+        <div class="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
+          ${b.isNew ? `<span class="inline-block text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style="background:#3b6641;font-family:'DM Sans',sans-serif">New</span>` : ''}
+          ${b.featured ? `<span class="inline-block text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md" style="background:#f59e0b;font-family:'DM Sans',sans-serif">Featured</span>` : ''}
+        </div>
+
+        ${disc >= 30 ? `<div class="absolute top-2.5 right-2.5 w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style="background:#ef4444"><span class="text-white font-extrabold leading-none" style="font-size:10px;font-family:'DM Sans',sans-serif">-${disc}%</span></div>` : ''}
+
+        <button onclick="toggleWish(${b.id}, this)" class="absolute bottom-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-all duration-200 active:scale-90" style="background:rgba(255,255,255,0.9)" aria-label="Wishlist">
+          <svg class="w-4 h-4" style="color:${wColor}" fill="${wFill}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        </button>
+      </div>
+
+      <div class="flex flex-col flex-1 p-4 gap-2.5">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md" style="${cStyle};font-family:'DM Sans',sans-serif">${b.condition}</span>
+          <span class="text-[11px] text-stone-400 truncate" style="font-family:'DM Sans',sans-serif">${b.genre}</span>
+        </div>
+
+        <div class="flex-1">
+          <h3 class="font-display text-base font-bold text-stone-900 leading-tight line-clamp-2 mb-0.5">${b.title}</h3>
+          <p class="text-sm text-stone-500" style="font-family:'DM Sans',sans-serif">by <span class="text-stone-600 hover:text-amber-600 cursor-pointer" style="transition:color 0.15s">${b.author}</span></p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-0.5">${starsSVG(b.rating)}</div>
+          <span class="text-xs text-stone-500" style="font-family:'DM Sans',sans-serif">${b.rating} · ${b.sold} sold</span>
+        </div>
+
+        <div class="flex items-end justify-between gap-2 pt-2 border-t border-stone-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xl font-bold text-stone-900" style="font-family:'DM Sans',sans-serif">£${b.sale.toFixed(2)}</span>
+              <span class="text-sm text-stone-400 line-through" style="font-family:'DM Sans',sans-serif">£${b.orig.toFixed(2)}</span>
+            </div>
+            <p class="text-[11px] font-semibold" style="color:#3b6641;font-family:'DM Sans',sans-serif">You save £${(b.orig-b.sale).toFixed(2)}</p>
+          </div>
+          <button onclick="addToCart(${b.id}, this)" class="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-white rounded-xl transition-all active:scale-95 shrink-0" style="background:#1c1917;font-family:'DM Sans',sans-serif" data-added="false">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            Add
+          </button>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function renderBooks(filter='All') {
+    const grid = document.getElementById('books-grid');
+    const filtered = filter === 'All' ? BOOKS : BOOKS.filter(b => b.genre === filter);
+    grid.innerHTML = filtered.map((b,i) => buildCard(b,i)).join('');
+    // hover overlays
+    filtered.forEach(b => {
+      const img = document.querySelector(`[data-genre="${b.genre}"] img`);
+    });
+  }
+
+  function filterBooks(btn, genre) {
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.style.background='white'; b.style.color='#57534e'; b.style.borderColor='#e7e5e0';
+    });
+    btn.style.background='#1c1917'; btn.style.color='white'; btn.style.borderColor='#1c1917';
+    renderBooks(genre);
+  }
+
+  function toggleWish(id, btn) {
+    wished[id] = !wished[id];
+    const svg = btn.querySelector('svg');
+    svg.style.color = wished[id] ? '#ef4444' : '#a8a29e';
+    svg.setAttribute('fill', wished[id] ? '#ef4444' : 'none');
+    btn.style.background = wished[id] ? '#ef4444' : 'rgba(255,255,255,0.9)';
+    if (wished[id]) btn.querySelector('svg').style.color = 'white';
+  }
+
+  function addToCart(id, btn) {
+    cartCount++;
+    btn.style.background = '#3b6641';
+    btn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Added!`;
+    setTimeout(() => {
+      btn.style.background='#1c1917';
+      btn.innerHTML=`<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg> Add`;
+    }, 2000);
+    // Show toast
+    const toast = document.getElementById('cart-toast');
+    document.getElementById('cart-count').textContent = cartCount;
+    toast.style.display='flex';
+    toast.style.animation='fadeUp 0.4s ease-out';
+  }
+
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    const eco = document.getElementById('eco-bar');
+    if (window.scrollY > 20) {
+      nav.style.background = 'rgba(250,249,247,0.88)';
+      nav.style.backdropFilter = 'blur(20px)';
+      nav.style.boxShadow = '0 1px 16px rgba(0,0,0,0.07)';
+      eco.style.opacity = '0';
+      eco.style.height = '0';
+      eco.style.overflow = 'hidden';
+      eco.style.padding = '0';
+    } else {
+      nav.style.background = 'transparent';
+      nav.style.backdropFilter = '';
+      nav.style.boxShadow = '';
+      eco.style.opacity = '1';
+      eco.style.height = '';
+      eco.style.overflow = '';
+      eco.style.padding = '';
+    }
+  });
+
+  // Init
+  renderBooks();
+</script>
+
+</body>
+</html>
